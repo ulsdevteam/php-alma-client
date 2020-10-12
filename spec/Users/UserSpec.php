@@ -143,8 +143,16 @@ class UserSpec extends ObjectBehavior
     public function it_can_set_preferred_address()
     {
         $address = $this->contactInfo->addresses[0];
-        $address->data->preferred = true;
+        $address->setPreferred();
         $address->preferred->shouldBe(true);
+        $address->setPreferred(false);
+        $address->preferred->shouldBe(false);
+    }
+
+    public function it_can_unset_preferred_address()
+    {
+        $this->contactInfo->unsetPreferredAddress();
+        $this->contactInfo->getPreferredAddress()->shouldBe(null);
     }
 
     public function it_can_set_address_type()
@@ -179,5 +187,10 @@ class UserSpec extends ObjectBehavior
     {
         $this->contactInfo->unsetPreferredPhone();
         $this->contactInfo->getPreferredPhone()->shouldBe(null);
+    }
+
+    public function it_can_get_all_phone_numbers()
+    {
+        $this->contactInfo->allPhones()->shouldBe(['12345678', '87654321']);
     }
 }

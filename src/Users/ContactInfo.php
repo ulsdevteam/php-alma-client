@@ -342,4 +342,31 @@ class ContactInfo extends Model
             array_splice($this->data->address, $key, 1);
         }
     }
+
+    /**
+     * Returns the user's preferred address
+     * 
+     * @return Address|null The address object or null if none are preferred
+     */
+    public function getPreferredAddress()
+    {
+        foreach ($this->data->address as $address) {
+            if ($address->preferred) {
+                return Address::make($this->client, $address);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Removes the preferred flag from all addresses
+     */
+    public function unsetPreferredAddress()
+    {
+        foreach ($this->data->address as $address) {
+            if ($address->preferred) {
+                $address->preferred = false;
+            }
+        }
+    }
 }

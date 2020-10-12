@@ -20,4 +20,14 @@ class Address extends Model
         }
         $this->data->address_type = [(object) $addressTypeObj];
     }
+
+    /**
+     * Set the preferred flag on this address
+     * 
+     * @param bool $preferred Whether this address should be preferred
+     */
+    public function setPreferred($preferred = true)
+    {
+        $this->data->preferred = $preferred;
+    }
 }
