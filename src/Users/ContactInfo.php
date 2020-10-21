@@ -10,14 +10,14 @@ class ContactInfo extends Model
     /**
      * Get the user's preferred SMS number.
      *
-     * @return string|null
+     * @return Phone|null
      */
     public function getSmsNumber()
     {
         if ($this->data->phone) {
             foreach ($this->data->phone as $phone) {
                 if ($phone->preferred_sms) {
-                    return $phone->phone_number;
+                    return Phone::make($this->client, $phone);
                 }
             }
         }
@@ -63,6 +63,8 @@ class ContactInfo extends Model
     /**
      * Add the user's preferred SMS number as a new internal mobile number.
      * @param $number string The SMS-capable mobile phone number
+     * 
+     * @return Phone
      */
     public function addSmsNumber($number)
     {
@@ -73,7 +75,7 @@ class ContactInfo extends Model
         if (!$this->data->phone) {
             $this->data->phone = [];
         }
-        $this->data->phone[] = (object) [
+        $phone_obj = (object) [
             'phone_number' => $number,
             'preferred' => false,
             'preferred_sms' => true,
@@ -83,6 +85,8 @@ class ContactInfo extends Model
                 'desc' => 'Mobile'
             ]]
         ];
+        $this->data->phone[] = $phone_obj;
+        return Phone::make($this->client, $phone_obj);
     }
 
     /**
@@ -91,6 +95,8 @@ class ContactInfo extends Model
      * @param string $phone_number The phone number
      * @param string $phone_type Type of the phone number (home, mobile, etc.)
      * @param bool $preferred Whether this should be the user's preferred phone number
+     * 
+     * @return Phone
      */
     public function addPhone($phone_number, $phone_type, $preferred = false)
     {
@@ -100,7 +106,7 @@ class ContactInfo extends Model
         if ($preferred) {
             $this->unsetPreferredPhone();
         }
-        $this->data->phone[] = (object) [
+        $phone_obj = (object) [
             'phone_number' => $phone_number,
             'preferred' => $preferred,
             'preferred_sms' => false,
@@ -109,18 +115,20 @@ class ContactInfo extends Model
                 'value' => $phone_type
             ]]
         ];
+        $this->data->phone[] = $phone_obj;
+        return Phone::make($this->client, $phone_obj);
     }
 
     /**
      * Gets the user's preferred phone number, or null if none are preferred
      * 
-     * @return string|null
+     * @return Phone|null
      */
     public function getPreferredPhone()
     {
         foreach ($this->data->phone as $phone) {
             if ($phone->preferred) {
-                return $phone->phone_number;
+                return Phone::make($this->client, $phone);
             }
         }
         return null;
@@ -152,7 +160,7 @@ class ContactInfo extends Model
                 return;
             }
         }
-        $this->addPhone($phone_number, 'home', true);
+        throw new Exception('Phone number ' . $phone_number . ' not found in user');
     }
 
     /**
@@ -173,27 +181,27 @@ class ContactInfo extends Model
     /**
      * Returns an array of all phone numbers associated with the user
      * 
-     * @return array An array of strings containing the phone numbers
+     * @return array An array of Phone objects
      */
     public function allPhones()
     {
         $phones = [];
         foreach ($this->data->phone as $phone) {
-            $phones[] = $phone->phone_number;
+            $phones[] = Phone::make($this->client, $phone);
         }
         return $phones;
     }
 
     /**
      * Gets the user's preferred email address
-     * @return string The email address
+     * @return Email The email address
      */
     public function getEmail()
     {
         if ($this->data->email) {
             foreach ($this->data->email as $email) {
                 if ($email->preferred) {
-                    return $email->email_address;
+                    return Email::make($this->client, $email);
                 }
             }
         }
@@ -218,7 +226,7 @@ class ContactInfo extends Model
                 }
             }
         }
-        $this->addEmail($email_address, 'personal', true);
+        throw new Exception('Email address ' . $email_address . ' not found in user');
     }
 
     /**
@@ -240,6 +248,8 @@ class ContactInfo extends Model
      * @param string $email_address The email address
      * @param string $email_type The email type, defaults to 'personal'
      * @param bool $preferred True if this should be the preferred email
+     * 
+     * @return Email
      */
     public function addEmail($email_address, $email_type = 'personal', $preferred = false)
     {
@@ -249,7 +259,7 @@ class ContactInfo extends Model
         if ($preferred) {
             $this->unsetEmail();
         }
-        $this->data->email[] = (object) [
+        $email_obj = (object) [
             'preferred' => $preferred,
             'segment_type' => 'Internal',
             'email_address' => $email_address,
@@ -258,6 +268,8 @@ class ContactInfo extends Model
                 'value' => $email_type,
             ]]
         ];
+        $this->data->email[] = $email_obj;
+        return Email::make($this->client, $email_obj);
     }
 
     /**
@@ -278,13 +290,13 @@ class ContactInfo extends Model
     /**
      * Returns an array of all email addresses associated with the user
      * 
-     * @return array An array of strings containing the email addresses
+     * @return array An array of Email objects
      */
     public function allEmails()
     {
         $emails = [];
         foreach ($this->data->email as $email) {
-            $emails[] = $email->email_address;
+            $emails[] = Email::make($this->client, $email);
         }
         return $emails;
     }
@@ -316,7 +328,7 @@ class ContactInfo extends Model
         if (isset($address['address_type'])) {
             if (is_string($address['address_type'])) {
                 $address['address_type'] = [(object)['value' => $address['address_type']]];
-            } elseif (\is_object($address['address_type'])) {
+            } elseif (is_object($address['address_type'])) {
                 $address['address_type'] = [$address['address_type']];
             }
         }

@@ -2,13 +2,14 @@
 
 namespace Scriptotek\Alma\Users;
 
-use Scriptotek\Alma\Model\Model;
+use Scriptotek\Alma\Model\SettableModel;
 
-class Address extends Model
+class Address extends SettableModel
 {
     /**
      * Set the type of this address
-     * 
+     * Possible values are listed in the 'UserAddressTypes' code table.
+     *
      * @param string $address_type The address type
      * @param string $description The description of this address type
      */
@@ -19,15 +20,5 @@ class Address extends Model
             $addressTypeObj['desc'] = $description;
         }
         $this->data->address_type = [(object) $addressTypeObj];
-    }
-
-    /**
-     * Set the preferred flag on this address
-     * 
-     * @param bool $preferred Whether this address should be preferred
-     */
-    public function setPreferred($preferred = true)
-    {
-        $this->data->preferred = $preferred;
     }
 }

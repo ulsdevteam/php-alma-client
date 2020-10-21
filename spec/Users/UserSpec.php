@@ -74,19 +74,19 @@ class UserSpec extends ObjectBehavior
 
     public function it_has_sms()
     {
-        $this->contactInfo->getSmsNumber()->shouldBe('87654321');
+        $this->contactInfo->getSmsNumber()->phone_number->shouldBe('87654321');
     }
     
     public function it_can_change_sms()
     {
         $this->contactInfo->setSmsNumber('12345678');
-        $this->contactInfo->getSmsNumber()->shouldBe('12345678');
+        $this->contactInfo->getSmsNumber()->phone_number->shouldBe('12345678');
     }
 
     public function it_can_add_sms()
     {
         $this->contactInfo->setSmsNumber('9999999');
-        $this->contactInfo->getSmsNumber()->shouldBe('9999999');
+        $this->contactInfo->getSmsNumber()->phone_number->shouldBe('9999999');
     }
 
     public function it_can_remove_sms()
@@ -97,8 +97,8 @@ class UserSpec extends ObjectBehavior
 
     public function it_can_add_email()
     {
-        $this->contactInfo->setEmail('example@example.com');
-        $this->contactInfo->getEmail()->shouldBe('example@example.com');
+        $this->contactInfo->addEmail('example@example.com', 'work', true);
+        $this->contactInfo->getEmail()->email_address->shouldBe('example@example.com');
     }
 
     public function it_can_unset_email()
@@ -143,9 +143,9 @@ class UserSpec extends ObjectBehavior
     public function it_can_set_preferred_address()
     {
         $address = $this->contactInfo->addresses[0];
-        $address->setPreferred();
+        $address->preferred = true;
         $address->preferred->shouldBe(true);
-        $address->setPreferred(false);
+        $address->preferred = false;
         $address->preferred->shouldBe(false);
     }
 
@@ -163,12 +163,16 @@ class UserSpec extends ObjectBehavior
             'value' => 'work',
             'desc' => 'Work'
         ]);
+        $address->address_type = 'home';
+        $address->data->address_type[0]->shouldBeLike((object)[
+            'value' => 'home'
+        ]);
     }
 
     public function it_can_add_phone_number()
     {
         $this->contactInfo->addPhone('8675309', 'home', true);
-        $this->contactInfo->getPreferredPhone()->shouldBe('8675309');
+        $this->contactInfo->getPreferredPhone()->phone_number->shouldBe('8675309');
     }
 
     public function it_can_remove_phone_number()
@@ -180,7 +184,7 @@ class UserSpec extends ObjectBehavior
     public function it_can_set_preferred_phone()
     {
         $this->contactInfo->setPreferredPhone('87654321');
-        $this->contactInfo->getPreferredPhone()->shouldBe('87654321');
+        $this->contactInfo->getPreferredPhone()->phone_number->shouldBe('87654321');
     }
 
     public function it_can_unset_preferred_phone()
@@ -191,6 +195,8 @@ class UserSpec extends ObjectBehavior
 
     public function it_can_get_all_phone_numbers()
     {
-        $this->contactInfo->allPhones()->shouldBe(['12345678', '87654321']);
+        $phones = $this->contactInfo->allPhones();
+        $phones[0]->phone_number->shouldBe('12345678');
+        $phones[1]->phone_number->shouldBe('87654321');
     }
 }
