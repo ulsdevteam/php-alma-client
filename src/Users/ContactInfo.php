@@ -45,7 +45,7 @@ class ContactInfo extends Model
     public function setSmsNumber($number)
     {
         $currentNumber = $this->getSmsNumber();
-        if ($number === $currentNumber) {
+        if ($currentNumber && $number === $currentNumber->phone_number) {
             return;
         }
         $this->unsetSmsNumber();
@@ -150,9 +150,15 @@ class ContactInfo extends Model
      * Sets the given phone number as the user's preferred number, adding it as an internal home phone if necessary
      * 
      * @param string $phone_number The phone number
+     * 
+     * @throws Exception when the given phone number is not found in the user
      */
     public function setPreferredPhone($phone_number)
     {
+        $current_phone = $this->getPreferredPhone();
+        if ($current_phone && $phone_number === $current_phone->phone_number) {
+            return;
+        }
         $this->unsetPreferredPhone();
         foreach ($this->data->phone as $phone) {
             if ($phone->phone_number === $phone_number) {
@@ -211,10 +217,13 @@ class ContactInfo extends Model
     /**
      * Sets the user's preferred email address, adding a new email address if needed.
      * @param string $email_address The email address
+     * 
+     * @throws Exception when the given email address is not found in the user
      */
     public function setEmail($email_address)
     {
-        if ($email_address === $this->getEmail()) {
+        $current_email = $this->getEmail();
+        if ($current_email && $email_address === $current_email->email_address) {
             return;
         }
         $this->unsetEmail();
