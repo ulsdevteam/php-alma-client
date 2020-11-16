@@ -12,5 +12,6 @@ class Conf
         $this->client = $client;
         $this->libraries = new Libraries($client);
         $this->jobs = new Jobs($client);
+        $this->codetables = new CodeTables($client);
     }
 }
