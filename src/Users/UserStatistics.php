@@ -33,19 +33,10 @@ class UserStatistics extends Model
     {
         $stats = array();
         foreach ($this->data as $statistic) {
-            $statcat_type    = $statistic->category_type;
-            $statcat_cat     = $statistic->statistic_category;
-            $statcat_note    = $statistic->statistic_note;
-            $segment_type    = $statistic->segment_type;
-
-            $type_code       = $statcat_type->value;
-            $type_desc       = $statcat_type->desc;
-            $category_code   = $statcat_cat->value;
-            $category_desc   = $statcat_cat->desc;
-
-            if ($type_code == $typeCode) {
+            if ($statistic->category_type->value == $typeCode) {
                 array_push($stats,$statistic);
             }
+    
         }
         return $stats;
     } 
@@ -59,17 +50,7 @@ class UserStatistics extends Model
     {
         $stats = array();
         foreach ($this->data as $statistic) {
-            $statcat_type    = $statistic->category_type;
-            $statcat_cat     = $statistic->statistic_category;
-            $statcat_note    = $statistic->statistic_note;
-            $segment_type    = $statistic->segment_type;
-
-            $type_code       = $statcat_type->value;
-            $type_desc       = $statcat_type->desc;
-            $category_code   = $statcat_cat->value;
-            $category_desc   = $statcat_cat->desc;
-
-            if ($type_desc == $typeDesc) {
+            if ($statistic->category_type->desc == $typeDesc) {
                 array_push($stats,$statistic);
             }
         }
@@ -85,17 +66,7 @@ class UserStatistics extends Model
     {
         $stats = array();
         foreach ($this->data as $statistic) {
-            $statcat_type    = $statistic->category_type;
-            $statcat_cat     = $statistic->statistic_category;
-            $statcat_note    = $statistic->statistic_note;
-            $segment_type    = $statistic->segment_type;
-
-            $type_code       = $statcat_type->value;
-            $type_desc       = $statcat_type->desc;
-            $category_code   = $statcat_cat->value;
-            $category_desc   = $statcat_cat->desc;
-
-            if ($category_code == $categoryCode) {
+            if ($statistic->statistic_category->value == $categoryCode) {
                 array_push($stats,$statistic);
             }
         }
@@ -111,17 +82,7 @@ class UserStatistics extends Model
     {
         $stats = array();
         foreach ($this->data as $statistic) {
-            $statcat_type    = $statistic->category_type;
-            $statcat_cat     = $statistic->statistic_category;
-            $statcat_note    = $statistic->statistic_note;
-            $segment_type    = $statistic->segment_type;
-
-            $type_code       = $statcat_type->value;
-            $type_desc       = $statcat_type->desc;
-            $category_code   = $statcat_cat->value;
-            $category_desc   = $statcat_cat->desc;
-
-            if ($category_desc == $categoryDesc) {
+            if ($statistic->statistic_category->desc == $categoryDesc) {
                 array_push($stats,$statistic);
             }
         }
@@ -137,17 +98,7 @@ class UserStatistics extends Model
     {
         $stats = array();
         foreach ($this->data as $statistic) {
-            $statcat_type    = $statistic->category_type;
-            $statcat_cat     = $statistic->statistic_category;
-            $statcat_note    = $statistic->statistic_note;
-            $segment_type    = $statistic->segment_type;
-
-            $type_code       = $statcat_type->value;
-            $type_desc       = $statcat_type->desc;
-            $category_code   = $statcat_cat->value;
-            $category_desc   = $statcat_cat->desc;
-
-            if ($segment_type == $segmentType) {
+            if ($statistic->segment_type == $segmentType) {
                 array_push($stats,$statistic);
             }
         }
@@ -163,17 +114,7 @@ class UserStatistics extends Model
     {
         $stats = array();
         foreach ($this->data as $statistic) {
-            $statcat_type    = $statistic->category_type;
-            $statcat_cat     = $statistic->statistic_category;
-            $statcat_note    = $statistic->statistic_note;
-            $segment_type    = $statistic->segment_type;
-
-            $type_code       = $statcat_type->value;
-            $type_desc       = $statcat_type->desc;
-            $category_code   = $statcat_cat->value;
-            $category_desc   = $statcat_cat->desc;
-
-            if (preg_match("/$note/i", $statcat_note)) {
+            if (preg_match("/$note/i", $statistic->statistic_note)) {
                 array_push($stats,$statistic);
             }
         }
@@ -189,17 +130,7 @@ class UserStatistics extends Model
     {
         $stats = array();
         foreach ($this->data as $statistic) {
-            $statcat_type    = $statistic->category_type;
-            $statcat_cat     = $statistic->statistic_category;
-            $statcat_note    = $statistic->statistic_note;
-            $segment_type    = $statistic->segment_type;
-
-            $type_code       = $statcat_type->value;
-            $type_desc       = $statcat_type->desc;
-            $category_code   = $statcat_cat->value;
-            $category_desc   = $statcat_cat->desc;
-
-            if (preg_match("/$typeCode/i", $type_code)) {
+            if (preg_match("/$typeCode/i", $statistic->category_type->value)) {
                 array_push($stats,$statistic);
             }
         }
@@ -215,17 +146,7 @@ class UserStatistics extends Model
     {
         $stats = array();
         foreach ($this->data as $statistic) {
-            $statcat_type    = $statistic->category_type;
-            $statcat_cat     = $statistic->statistic_category;
-            $statcat_note    = $statistic->statistic_note;
-            $segment_type    = $statistic->segment_type;
-
-            $type_code       = $statcat_type->value;
-            $type_desc       = $statcat_type->desc;
-            $category_code   = $statcat_cat->value;
-            $category_desc   = $statcat_cat->desc;
-
-            if (preg_match("/$typeDesc/i", $type_desc)) {
+            if (preg_match("/$typeDesc/i", $statistic->category_type->desc)) {
                 array_push($stats,$statistic);
             }
         }
@@ -241,17 +162,7 @@ class UserStatistics extends Model
     {
         $stats = array();
         foreach ($this->data as $statistic) {
-            $statcat_type    = $statistic->category_type;
-            $statcat_cat     = $statistic->statistic_category;
-            $statcat_note    = $statistic->statistic_note;
-            $segment_type    = $statistic->segment_type;
-
-            $type_code       = $statcat_type->value;
-            $type_desc       = $statcat_type->desc;
-            $category_code   = $statcat_cat->value;
-            $category_desc   = $statcat_cat->desc;
-
-            if (preg_match("/$categoryCode/i", $category_code)) {
+            if (preg_match("/$categoryCode/i", $statistic->statistic_category->value)) {
                 array_push($stats,$statistic);
             }
         }
@@ -267,37 +178,11 @@ class UserStatistics extends Model
     {
         $stats = array();
         foreach ($this->data as $statistic) {
-            $statcat_type    = $statistic->category_type;
-            $statcat_cat     = $statistic->statistic_category;
-            $statcat_note    = $statistic->statistic_note;
-            $segment_type    = $statistic->segment_type;
-
-            $type_code       = $statcat_type->value;
-            $type_desc       = $statcat_type->desc;
-            $category_code   = $statcat_cat->value;
-            $category_desc   = $statcat_cat->desc;
-
-            if (preg_match("/$categoryDesc/i", $category_desc)) {
+            if (preg_match("/$categoryDesc/i", $statistic->statistic_category->desc)) {
                 array_push($stats,$statistic);
             }
         }
         return $stats;
     }
-
-
-
-    /*
-    public function all($status = 'ACTIVE')
-    {
-        $ids = [$this->data->primary_id];
-        foreach ($this->data->user_identifier as $identifier) {
-            if (is_null($status) || $identifier->status == $status) {
-                $ids[] = $identifier->value;
-            }
-        }
-
-        return $ids;
-    }
-    */
 
 }
