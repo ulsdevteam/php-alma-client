@@ -25,6 +25,49 @@ class UserStatistics extends Model
     }
 
     /**
+    * Get a statistic.
+    *
+    * @return Statistic.
+    */
+    public function getStatistic($typeCode,$categoryCode)
+    {
+        $stats = array();
+        foreach ($this->data as $statistic) {
+            if (($statistic->category_type->value == $typeCode) && 
+                ($statistic->statistic_category->value == $categoryCode)) {
+                array_push($stats,$statistic);
+            }
+        }
+        return $stats;
+    }
+
+    /**
+    * Add a user statistic.
+    *
+    */
+    public function addStatistic($typeCode,$categoryCode)
+    {
+    }
+
+    /**
+    * Delete a user statistic.
+    *
+    */
+    public function removeStatistic($typeCode,$categoryCode)
+    {
+    }
+
+    /**
+    * Update a user statistic.
+    *
+    */
+    public function updateStatistic($fromTypeCode,$fromCategoryCode,$toTypeCode,$toCategoryCode)
+    {
+        $this->removeStatistic($fromTypeCode,$categoryCode);
+        $this->addStatistic($toTypeCode,$toCategoryCode);
+    }
+
+    /**
     * Get Stats By Type Code.
     *
     * @return Array of Statistics.
