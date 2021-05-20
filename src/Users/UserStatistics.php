@@ -45,8 +45,24 @@ class UserStatistics extends Model
     * Add a user statistic.
     *
     */
-    public function addStatistic($typeCode,$categoryCode)
+    public function addStatistic($typeCode,$typeDesc,$categoryCode,$categoryDesc,$note,$segment_type)
     {
+        # Create the new statistic object
+        $stat_obj = (object) [
+            'statistic_category' => [(object) [
+                'value' => $categoryCode,
+                'desc'  => $categoryDesc,
+            ]],
+            'category_type' => [(object) [
+                'value' => $typeCode,
+                'desc'  => $typeDesc,
+            ]],
+            'statistic_note' => $note,
+            'segment_type'   => $segment_type,
+        ];
+
+        # Add the object to the user
+        $this->data->user_statistic[] = $stat_obj;
     }
 
     /**
