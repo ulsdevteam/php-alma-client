@@ -30,6 +30,28 @@ class CodeTables
         return json_decode($this->client->get($this->urlBase()."/$codetable"));
     }
 
+
+    /**
+    * Return a single row referring to the code table.
+    *
+    * @param $codetable - Code Table to pull from.
+    * @param $code - The code in the Table we want to pull.
+    *
+    * @return object - the row in the code table.
+    */
+    public function getCodeTableRowByCode($codetable,$code)
+    {
+        echo "CodeTable: $codetable\n";
+        echo "Code:      $code\n";
+        $count = 0;
+        foreach ($this->getCodeTable($codetable) as $row) {
+            $count++;
+        }
+        print "Total Rows in $codetable: $count\n";
+        return;
+    }
+
+
     /**
     * Return a object containing a list of code tables.
     *

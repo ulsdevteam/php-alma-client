@@ -13,7 +13,7 @@ class UserStatistics extends Model
     /**
      * Get the user's statistics.
      *
-     * @return Statistic
+     * @return Array of Statistics.
      */
     public function getStatistics()
     {
@@ -26,6 +26,9 @@ class UserStatistics extends Model
 
     /**
     * Get a statistic.
+    *
+    * @param $typeCode code of the category type.
+    * @param $categoryCode code of the statistical category.
     *
     * @return Statistic.
     */
@@ -42,10 +45,18 @@ class UserStatistics extends Model
     }
 
     /**
-    * Add a user statistic.
+    * Add a user statistic with no regard to existing Types and Categories.
     *
+    * @param string $typeCode code of the category type.
+    * @param string $typeDesc description of the category type.
+    * @param string $categoryCode code of the statistical category.
+    * @param string $categoryDesc description of the statistical category.
+    * @param string $note free text description of the statistic.
+    * @param string $segment_type (Internal|External)
+    *
+    * @return Statistic
     */
-    public function addStatistic($typeCode,$typeDesc,$categoryCode,$categoryDesc,$note,$segment_type)
+    public function addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$note,$segment_type)
     {
         # Create the new statistic object
         $stat_obj = (object) [
@@ -61,16 +72,59 @@ class UserStatistics extends Model
             'segment_type'   => $segment_type,
         ];
 
+
+        //* TODO HERE *//
+
         # Add the object to the user
         $this->data->user_statistic[] = $stat_obj;
+
+        /*  Not Sure this is quite right or needed. */
+        return Statistic::make($this->client,$stat_obj);
+    }
+
+    /**
+    * Add a user statistic based upon existing Types and Categories.
+    *
+    * @param string $typeCode code of the category type.
+    * @param string $categoryCode code of the statistical category.
+    *
+    * @return Statistic
+    */
+    public function addStatistic($typeCode,$categoryCode)
+    {
+        //* TODO HERE *//
+
+        /* Logic: */
+        /* Lookup both $typeCode and $categoryCode in codetable */
+        /* Obtain information (code/description) from both code tables. */
+        /* If found and ok, add the statistic to the user */
+
+        /* Code Tables used:
+            Code Table; UserStatisticalTypes
+            Code Table: UserStatCategories
+        */
+
+        /* Seems to be an issue with # of categoryCodes that can be pulled at once (max:10) */
+        /* But performing via curl returns all (???). */
+        /* May need to open a case to allow resumption on pulling code tables regarding 'limit' and 'offset'? */
     }
 
     /**
     * Delete a user statistic.
     *
+    * @param string $typeCode code of the category type.
+    * @param string $categoryCode code of the statistical category.
     */
     public function removeStatistic($typeCode,$categoryCode)
     {
+        foreach ($this->data->user_statistic as $statistic) {
+            if (($statistic->category_type->value == $typeCode ) && ($statistic->statistic_category->value == $categoryCode )) {
+
+                //* TODO HERE *//
+
+                return;
+            }
+        }
     }
 
     /**
@@ -79,6 +133,11 @@ class UserStatistics extends Model
     */
     public function updateStatistic($fromTypeCode,$fromCategoryCode,$toTypeCode,$toCategoryCode)
     {
+    
+        //* TODO HERE *//
+
+        /* Remove "from" statistic, then add "to" statistic */
+
         $this->removeStatistic($fromTypeCode,$categoryCode);
         $this->addStatistic($toTypeCode,$toCategoryCode);
     }
