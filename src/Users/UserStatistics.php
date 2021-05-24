@@ -60,23 +60,20 @@ class UserStatistics extends Model
     {
         # Create the new statistic object
         $stat_obj = (object) [
-            'statistic_category' => [(object) [
+            'statistic_category' => (object) [
                 'value' => $categoryCode,
                 'desc'  => $categoryDesc,
-            ]],
-            'category_type' => [(object) [
+            ],
+            'category_type' => (object) [
                 'value' => $typeCode,
                 'desc'  => $typeDesc,
-            ]],
+            ],
             'statistic_note' => $note,
             'segment_type'   => $segment_type,
         ];
 
-
-        //* TODO HERE *//
-
         # Add the object to the user
-        $this->data->user_statistic[] = $stat_obj;
+        $this->data[] = $stat_obj;
 
         /*  Not Sure this is quite right or needed. */
         return Statistic::make($this->client,$stat_obj);
@@ -107,6 +104,20 @@ class UserStatistics extends Model
         /* Seems to be an issue with # of categoryCodes that can be pulled at once (max:10) */
         /* But performing via curl returns all (???). */
         /* May need to open a case to allow resumption on pulling code tables regarding 'limit' and 'offset'? */
+
+        #
+        # These functions for CodeTables need defined.
+        #
+        #$typeDesc = $this->conf->CodeTables->getDesc('UserStatisticalTypes',$typeCode);
+        #$categoryDesc = $this->conf->CodeTables->getDesc('UserStatCagegories',$categoryCode);
+        #
+        # These are temporary.
+        $segmentType = 'External';  # Just for now.
+        $note = '';  # Just for now.
+
+        $ret = $this->addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$note,$segmentType);
+
+        return($ret);
     }
 
     /**
