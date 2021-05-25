@@ -14,6 +14,8 @@ class CodeTables
 
     /* @var Client */
     protected $client;
+    
+    protected $codeTables;
 
     public function __construct(Client $client)
     {
@@ -27,7 +29,9 @@ class CodeTables
     */
     public function getCodeTable($codetable)
     {
-        return json_decode($this->client->get($this->urlBase()."/$codetable"));
+        $codeTable = json_decode($this->client->get($this->urlBase()."/$codetable"));
+        return($codeTable);
+        #return json_decode($this->client->get($this->urlBase()."/$codetable"));
     }
 
 
@@ -44,11 +48,26 @@ class CodeTables
         echo "CodeTable: $codetable\n";
         echo "Code:      $code\n";
         $count = 0;
-        foreach ($this->getCodeTable($codetable) as $row) {
-            $count++;
+        $found = array();
+        $my_codetable = $this->getCodeTable($codetable);
+        var_dump($my_codetable);
+        $rows = $my_codetable->row;
+
+        print "Name: $name - Desc: $desc\n";
+
+        foreach ($rows as $row) {
+            #var_dump($row);
+            if ($row->code == $code) {
+                array_push($found,$row);
+                $count++;
+            }
         }
-        print "Total Rows in $codetable: $count\n";
-        return;
+        print "Total Found Rows in $codetable: $count\n";
+
+        print "Found:\n";
+        var_dump($found);
+
+        return($found);
     }
 
 
@@ -59,7 +78,9 @@ class CodeTables
     */
     public function getCodeTables()
     {
-        return json_decode($this->client->get($this->urlBase()));
+        $this->codeTables = json_decode($this->client->get($this->urlBase()));
+        return($this->codeTables);
+        #return json_decode($this->client->get($this->urlBase()));
     }
 
      /**
