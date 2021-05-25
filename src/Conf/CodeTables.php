@@ -43,8 +43,7 @@ class CodeTables implements \ArrayAccess
     */
     public function getCodeTables()
     {
-        $this->codeTables = json_decode($this->client->get($this->urlBase()));
-        return($this->codeTables);
+        return json_decode($this->client->get($this->urlBase()));
     }
     
     /**

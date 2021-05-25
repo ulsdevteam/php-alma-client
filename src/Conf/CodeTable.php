@@ -36,13 +36,14 @@ class CodeTable extends LazyResource
     {
         $found = array();
         $codeTable = json_decode($this->client->get($this->urlBase()));
-        #var_dump($codeTable);
+
         foreach ($codeTable->row as $row) {
             if ($row->code == $code) {
                 array_push($found,$row);
                 $count++;
             }
         }
+
         return($found);
     }
 
