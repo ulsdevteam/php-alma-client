@@ -40,7 +40,6 @@ class CodeTable extends LazyResource
         foreach ($codeTable->row as $row) {
             if ($row->code == $code) {
                 array_push($found,$row);
-                $count++;
             }
         }
 
