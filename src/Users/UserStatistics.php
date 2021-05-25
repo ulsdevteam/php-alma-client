@@ -56,7 +56,7 @@ class UserStatistics extends Model
     *
     * @return Statistic
     */
-    public function addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$note,$segment_type)
+    public function addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$segment_type,$note)
     {
         # Create the new statistic object
         $stat_obj = (object) [
@@ -76,7 +76,8 @@ class UserStatistics extends Model
         $this->data[] = $stat_obj;
 
         /*  Not Sure this is quite right or needed. */
-        return Statistic::make($this->client,$stat_obj);
+        #return Statistic::make($this->client,$stat_obj);
+        #return($this->data);
     }
 
     /**
@@ -87,7 +88,7 @@ class UserStatistics extends Model
     *
     * @return Statistic
     */
-    public function addStatistic($typeCode,$categoryCode)
+    public function addStatistic($typeCode,$categoryCode,$segmentType,$note)
     {
         //* TODO HERE *//
 
@@ -111,13 +112,12 @@ class UserStatistics extends Model
         #$typeDesc = $this->conf->CodeTables->getDesc('UserStatisticalTypes',$typeCode);
         #$categoryDesc = $this->conf->CodeTables->getDesc('UserStatCagegories',$categoryCode);
         #
-        # These are temporary.
-        $segmentType = 'External';  # Just for now.
-        $note = '';  # Just for now.
+        # These are temporary for testing.
+        $typeDesc = 'Test';
+        $categoryDesc = 'Test';
+        
+        $this->addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$segmentType,$note);
 
-        $ret = $this->addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$note,$segmentType);
-
-        return($ret);
     }
 
     /**
@@ -128,29 +128,26 @@ class UserStatistics extends Model
     */
     public function removeStatistic($typeCode,$categoryCode)
     {
-        foreach ($this->data->user_statistic as $statistic) {
-            if (($statistic->category_type->value == $typeCode ) && ($statistic->statistic_category->value == $categoryCode )) {
-
-                //* TODO HERE *//
-
-                return;
+        $max = sizeof($this->data);
+        $ret = false;
+        for($i = 0; $i < $max; $i++) {
+            if (($this->data[$i]->category_type->value == $typeCode) && ($this->data[$i]->statistic_category->value == $categoryCode)) {
+                unset($this->data[$i]);
+                $ret = true;
             }
         }
+        return($ret);
     }
 
     /**
     * Update a user statistic.
     *
     */
-    public function updateStatistic($fromTypeCode,$fromCategoryCode,$toTypeCode,$toCategoryCode)
+    public function updateStatistic($fromTypeCode,$fromCategoryCode,$toTypeCode,$toCategoryCode,$segementType,$note)
     {
-    
-        //* TODO HERE *//
-
         /* Remove "from" statistic, then add "to" statistic */
-
         $this->removeStatistic($fromTypeCode,$categoryCode);
-        $this->addStatistic($toTypeCode,$toCategoryCode);
+        $this->addStatistic($toTypeCode,$toCategoryCode,$segmentType,$note);
     }
 
     /**
