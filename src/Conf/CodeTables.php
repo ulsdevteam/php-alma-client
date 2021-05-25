@@ -3,73 +3,38 @@
 namespace Scriptotek\Alma\Conf;
 
 use Scriptotek\Alma\Client;
-use Scriptotek\Alma\Model\PaginatedListGenerator;
-use Scriptotek\Alma\Model\SimplePaginatedList;
 use Scriptotek\Alma\Model\ReadOnlyArrayAccess;
-use Scriptotek\Alma\Conf\Library;
 
-class CodeTables 
+/**
+ * A non-iterable collection of CodeTable resources
+ */
+class CodeTables implements \ArrayAccess
 {
     use ReadOnlyArrayAccess;
 
-    /* @var Client */
     protected $client;
-    
-    protected $codeTables;
 
+    /**
+     * CodeTables constructor.
+     *
+     * @param Client $client
+     */
     public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
     /**
-    * Return an object containing the code table content.
-    *
-    * @return CodeTable object.
-    */
-    public function getCodeTable($codetable)
+     * Get a CodeTable by identifier
+     *
+     * @param $code The identifier of a CodeTable
+     *
+     * @return CodeTable
+     */
+    public function get($code)
     {
-        $codeTable = json_decode($this->client->get($this->urlBase()."/$codetable"));
-        return($codeTable);
-        #return json_decode($this->client->get($this->urlBase()."/$codetable"));
+        return CodeTable::make($this->client, $code);
     }
-
-
-    /**
-    * Return a single row referring to the code table.
-    *
-    * @param $codetable - Code Table to pull from.
-    * @param $code - The code in the Table we want to pull.
-    *
-    * @return object - the row in the code table.
-    */
-    public function getCodeTableRowByCode($codetable,$code)
-    {
-        echo "CodeTable: $codetable\n";
-        echo "Code:      $code\n";
-        $count = 0;
-        $found = array();
-        $my_codetable = $this->getCodeTable($codetable);
-        var_dump($my_codetable);
-        $rows = $my_codetable->row;
-
-        print "Name: $name - Desc: $desc\n";
-
-        foreach ($rows as $row) {
-            #var_dump($row);
-            if ($row->code == $code) {
-                array_push($found,$row);
-                $count++;
-            }
-        }
-        print "Total Found Rows in $codetable: $count\n";
-
-        print "Found:\n";
-        var_dump($found);
-
-        return($found);
-    }
-
 
     /**
     * Return a object containing a list of code tables.
@@ -80,17 +45,16 @@ class CodeTables
     {
         $this->codeTables = json_decode($this->client->get($this->urlBase()));
         return($this->codeTables);
-        #return json_decode($this->client->get($this->urlBase()));
     }
-
-     /**
-     * Generate the base URL for this resource.
-     *
-     * @return string
-     */
+    
+    /**
+    * Generate the base URL for this resource.
+    *
+    * @return string
+    */
     protected function urlBase()
     {
         return '/conf/code-tables';
     }
+    
 }
-
