@@ -19,7 +19,21 @@ class UserStatistics extends Model
     {
         $stats = array();
         foreach ($this->data as $statistic) {
-                array_push($stats,$statistic);
+            $stats[] = $statistic;
+        }
+        return $stats;
+    }
+
+    /**
+     * Get the user's statistics.
+     * 
+     * @return array of statistics.
+     */
+    public function get()
+    {
+        $stats = array();
+        foreach ($this->data as $statistic) {
+            $stats[] = $statistic;
         }
         return $stats;
     }
@@ -38,7 +52,7 @@ class UserStatistics extends Model
         foreach ($this->data as $statistic) {
             if (($statistic->category_type->value == $typeCode) && 
                 ($statistic->statistic_category->value == $categoryCode)) {
-                array_push($stats,$statistic);
+                $stats[] = $statistic;
             }
         }
         return $stats;
@@ -130,15 +144,22 @@ class UserStatistics extends Model
     */
     public function removeStatistic($typeCode,$categoryCode)
     {
-        $max = sizeof($this->data);
-        $ret = false;
-        for($i = 0; $i < $max; $i++) {
-            if (($this->data[$i]->category_type->value == $typeCode) && ($this->data[$i]->statistic_category->value == $categoryCode)) {
-                unset($this->data[$i]);
-                $ret = true;
+        # Old way:
+        #$max = sizeof($this->data);
+        #for($i = 0; $i < $max; $i++) {
+        #    if (($this->data[$i]->category_type->value == $typeCode) && ($this->data[$i]->statistic_category->value == $categoryCode)) {
+        #        unset($this->data[$i]);
+        #        $ret = true;
+        #    }
+        #}
+
+        # New way: (Thanks Rick!)
+        foreach($this->data as $key => $row) {
+            if (($row->category_type->value == $typeCode) && ($row->statistic_category->value == $categoryCode)) {
+                array_splice($this->data, $key, 1);
             }
         }
-        return($ret);
+        return;
     }
 
     /**
