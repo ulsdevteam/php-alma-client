@@ -102,21 +102,24 @@ class UserStatistics extends Model
             Code Table: UserStatCategories
         */
 
-        /* Seems to be an issue with # of categoryCodes that can be pulled at once (max:10) */
-        /* But performing via curl returns all (???). */
-        /* May need to open a case to allow resumption on pulling code tables regarding 'limit' and 'offset'? */
+        # Note need some error checking etc. here.
 
-        #
-        # These functions for CodeTables need defined.
-        #
-        #$typeDesc = $this->conf->CodeTables->getDesc('UserStatisticalTypes',$typeCode);
-        #$categoryDesc = $this->conf->CodeTables->getDesc('UserStatCagegories',$categoryCode);
+        # Get the Type and Category Descriptions for the codes from the code tables.
+        $stat = $this->client->conf->codetables->get('UserStatisticalTypes')->getRowByCode($typeCode);
+        $typeDesc = $stat[0]->description;
+
+        $stat = $this->client->conf->codetables->get('UserStatCategories')->getRowByCode($categoryCode);
+        $categoryDesc = $stat[0]->description;
         #
         # These are temporary for testing.
-        $typeDesc = 'Test';
-        $categoryDesc = 'Test';
+        #$typeDesc = 'Test';
+        #$categoryDesc = 'Test';
         
+        # Add the statistic:
         $this->addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$segmentType,$note);
+
+        # For debugging:
+        #print "TypeCode: $typeCode\nTypeDesc: $typeDesc\nCategoryCode: $categoryCode\nCategoryDesc: $categoryDesc\n";
 
     }
 
