@@ -145,10 +145,10 @@ class UserStatistics extends Model
     * Update a user statistic.
     *
     */
-    public function updateStatistic($fromTypeCode,$fromCategoryCode,$toTypeCode,$toCategoryCode,$segementType,$note)
+    public function updateStatistic($fromTypeCode,$fromCategoryCode,$toTypeCode,$toCategoryCode,$segmentType,$note)
     {
         /* Remove "from" statistic, then add "to" statistic */
-        $this->removeStatistic($fromTypeCode,$categoryCode);
+        $this->removeStatistic($fromTypeCode,$fromCategoryCode);
         $this->addStatistic($toTypeCode,$toCategoryCode,$segmentType,$note);
     }
 
