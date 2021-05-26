@@ -120,7 +120,6 @@ class UserStatistics extends Model
 
         # For debugging:
         #print "TypeCode: $typeCode\nTypeDesc: $typeDesc\nCategoryCode: $categoryCode\nCategoryDesc: $categoryDesc\n";
-
     }
 
     /**
