@@ -183,9 +183,8 @@ class UserStatistics extends Model
         $stats = array();
         foreach ($this->data as $statistic) {
             if ($statistic->category_type->value == $typeCode) {
-                array_push($stats,$statistic);
-            }
-    
+                $stats[] = $statistic;
+            } 
         }
         return $stats;
     } 
@@ -200,7 +199,7 @@ class UserStatistics extends Model
         $stats = array();
         foreach ($this->data as $statistic) {
             if ($statistic->category_type->desc == $typeDesc) {
-                array_push($stats,$statistic);
+                $stats[] = $statistic;
             }
         }
         return $stats;
@@ -216,7 +215,7 @@ class UserStatistics extends Model
         $stats = array();
         foreach ($this->data as $statistic) {
             if ($statistic->statistic_category->value == $categoryCode) {
-                array_push($stats,$statistic);
+                $stats[] = $statistic;
             }
         }
         return $stats;
@@ -232,7 +231,7 @@ class UserStatistics extends Model
         $stats = array();
         foreach ($this->data as $statistic) {
             if ($statistic->statistic_category->desc == $categoryDesc) {
-                array_push($stats,$statistic);
+                $stats[] = $statistic;
             }
         }
         return $stats;
@@ -248,7 +247,7 @@ class UserStatistics extends Model
         $stats = array();
         foreach ($this->data as $statistic) {
             if ($statistic->segment_type == $segmentType) {
-                array_push($stats,$statistic);
+                $stats[] = $statistic;
             }
         }
         return $stats;
@@ -264,7 +263,7 @@ class UserStatistics extends Model
         $stats = array();
         foreach ($this->data as $statistic) {
             if (preg_match("/$note/i", $statistic->statistic_note)) {
-                array_push($stats,$statistic);
+                $stats[] = $statistic;
             }
         }
         return $stats;
@@ -280,7 +279,7 @@ class UserStatistics extends Model
         $stats = array();
         foreach ($this->data as $statistic) {
             if (preg_match("/$typeCode/i", $statistic->category_type->value)) {
-                array_push($stats,$statistic);
+                $stats[] = $statistic;
             }
         }
         return $stats;
@@ -296,7 +295,7 @@ class UserStatistics extends Model
         $stats = array();
         foreach ($this->data as $statistic) {
             if (preg_match("/$typeDesc/i", $statistic->category_type->desc)) {
-                array_push($stats,$statistic);
+                $stats[] = $statistic;
             }
         }
         return $stats;
@@ -312,7 +311,7 @@ class UserStatistics extends Model
         $stats = array();
         foreach ($this->data as $statistic) {
             if (preg_match("/$categoryCode/i", $statistic->statistic_category->value)) {
-                array_push($stats,$statistic);
+                $stats[] = $statistic;
             }
         }
         return $stats;
@@ -328,7 +327,7 @@ class UserStatistics extends Model
         $stats = array();
         foreach ($this->data as $statistic) {
             if (preg_match("/$categoryDesc/i", $statistic->statistic_category->desc)) {
-                array_push($stats,$statistic);
+                $stats[] = $statistic;
             }
         }
         return $stats;
