@@ -28,11 +28,12 @@ If the package doesn't fit your needs, you might take a look at the alternative
      * [Item by barcode](#item-by-barcode)
      * [Electronic portfolios and collections](#electronic-portfolios-and-collections)
      * [Digital representation and files](#digital-representation-and-files)
-  * [Users, loans, fees and requests](#users-loans-fees-and-requests)
+  * [Users, loans, fees, requests and statistics](#users-loans-fees-requests-and-statistics)
      * [Search](#search)
      * [Loans](#loans)
      * [Fees](#fees)
      * [Requests](#requests)
+     * [Statistics](#statistics)
   * [Analytics reports](#analytics-reports)
      * [Column names](#column-names)
      * [Filters](#filters)
@@ -329,7 +330,7 @@ foreach ($bib->representations as $rep) {
 }
 ```
 
-## Users, loans, fees and requests
+## Users, loans, fees, requests and statistics
 
 **Note**: Editing is not fully implemented.
 
@@ -428,6 +429,21 @@ foreach ($user->requests as $request) {
 ```
 
 Requests can also be retrieved from a `Bib` object or an `Item` object.
+
+### Statistics
+
+**Note** Not fully implemented.
+
+Example:
+```php
+foreach ($user->Statistics as $statistic) {
+    echo json_endcode($statistic, JSON_PRETTY_PRINT);
+}
+```
+```php
+$user->Statitics->addStatistic($typeCode,$categoryCode,'External',$note);
+$user->save();
+```
 
 ## Analytics reports
 
