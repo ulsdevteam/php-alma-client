@@ -18,7 +18,7 @@ class UserStatistics extends Model
     public function getStatistics()
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             $stats[] = $statistic;
         }
         return $stats;
@@ -32,7 +32,7 @@ class UserStatistics extends Model
     public function get()
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             $stats[] = $statistic;
         }
         return $stats;
@@ -49,7 +49,7 @@ class UserStatistics extends Model
     public function getStatistic($typeCode,$categoryCode)
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             if (($statistic->category_type->value == $typeCode) && 
                 ($statistic->statistic_category->value == $categoryCode)) {
                 $stats[] = $statistic;
@@ -87,11 +87,7 @@ class UserStatistics extends Model
         ];
 
         # Add the object to the user
-        $this->data[] = $stat_obj;
-
-        /*  Not Sure this is quite right or needed. */
-        #return Statistic::make($this->client,$stat_obj);
-        #return($this->data);
+        $this->data->user_statistic[] = $stat_obj;
     }
 
     /**
@@ -124,10 +120,6 @@ class UserStatistics extends Model
 
         $stat = $this->client->conf->codetables->get('UserStatCategories')->getRowByCode($categoryCode);
         $categoryDesc = $stat[0]->description;
-        #
-        # These are temporary for testing.
-        #$typeDesc = 'Test';
-        #$categoryDesc = 'Test';
         
         # Add the statistic:
         $this->addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$segmentType,$note);
@@ -154,7 +146,7 @@ class UserStatistics extends Model
         #}
 
         # New way: (Thanks Rick!)
-        foreach($this->data as $key => $row) {
+        foreach($this->data->user_statistic as $key => $row) {
             if (($row->category_type->value == $typeCode) && ($row->statistic_category->value == $categoryCode)) {
                 array_splice($this->data, $key, 1);
             }
@@ -181,7 +173,7 @@ class UserStatistics extends Model
     public function getStatsByTypeCode($typeCode)
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             if ($statistic->category_type->value == $typeCode) {
                 $stats[] = $statistic;
             } 
@@ -197,7 +189,7 @@ class UserStatistics extends Model
     public function getStatsByTypeDesc($typeDesc)
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             if ($statistic->category_type->desc == $typeDesc) {
                 $stats[] = $statistic;
             }
@@ -213,7 +205,7 @@ class UserStatistics extends Model
     public function getStatsByCategoryCode($categoryCode)
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             if ($statistic->statistic_category->value == $categoryCode) {
                 $stats[] = $statistic;
             }
@@ -229,7 +221,7 @@ class UserStatistics extends Model
     public function getStatsByCategoryDesc($categoryDesc)
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             if ($statistic->statistic_category->desc == $categoryDesc) {
                 $stats[] = $statistic;
             }
@@ -245,7 +237,7 @@ class UserStatistics extends Model
     public function getStatsBySegmentType($segmentType)
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             if ($statistic->segment_type == $segmentType) {
                 $stats[] = $statistic;
             }
@@ -261,7 +253,7 @@ class UserStatistics extends Model
     public function searchStatsByNote($note)
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             if (preg_match("/$note/i", $statistic->statistic_note)) {
                 $stats[] = $statistic;
             }
@@ -277,7 +269,7 @@ class UserStatistics extends Model
     public function searchStatsByTypeCode($typeCode)
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             if (preg_match("/$typeCode/i", $statistic->category_type->value)) {
                 $stats[] = $statistic;
             }
@@ -293,7 +285,7 @@ class UserStatistics extends Model
     public function searchStatsByTypeDesc($typeDesc)
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             if (preg_match("/$typeDesc/i", $statistic->category_type->desc)) {
                 $stats[] = $statistic;
             }
@@ -309,7 +301,7 @@ class UserStatistics extends Model
     public function searchStatsByCategoryCode($categoryCode)
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             if (preg_match("/$categoryCode/i", $statistic->statistic_category->value)) {
                 $stats[] = $statistic;
             }
@@ -325,7 +317,7 @@ class UserStatistics extends Model
     public function searchStatsByCategoryDesc($categoryDesc)
     {
         $stats = array();
-        foreach ($this->data as $statistic) {
+        foreach ($this->data->user_statistic as $statistic) {
             if (preg_match("/$categoryDesc/i", $statistic->statistic_category->desc)) {
                 $stats[] = $statistic;
             }

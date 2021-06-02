@@ -141,7 +141,8 @@ class User extends LazyResource
     {
         $this->_identifiers = UserIdentifiers::make($this->client, $data);
         $this->_contact_info = ContactInfo::make($this->client, $data->contact_info);
-        $this->_user_statistics = UserStatistics::make($this->client, $data->user_statistic);
+        #$this->_user_statistics = UserStatistics::make($this->client, $data->user_statistic);
+        $this->_user_statistics = UserStatistics::make($this->client, $data);
     }
 
     /**
