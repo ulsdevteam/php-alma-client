@@ -95,8 +95,8 @@ class UserStatistics extends Model
     *
     * @param string $typeCode code of the category type.
     * @param string $categoryCode code of the statistical category.
-    *
-    * @return Statistic
+    * @param string $segmentType
+    * @param string $note
     */
     public function addStatistic($typeCode,$categoryCode,$segmentType,$note)
     {
@@ -124,8 +124,7 @@ class UserStatistics extends Model
         # Add the statistic:
         $this->addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$segmentType,$note);
 
-        # For debugging:
-        #print "TypeCode: $typeCode\nTypeDesc: $typeDesc\nCategoryCode: $categoryCode\nCategoryDesc: $categoryDesc\n";
+        return;
     }
 
     /**
@@ -136,19 +135,9 @@ class UserStatistics extends Model
     */
     public function removeStatistic($typeCode,$categoryCode)
     {
-        # Old way:
-        #$max = sizeof($this->data);
-        #for($i = 0; $i < $max; $i++) {
-        #    if (($this->data[$i]->category_type->value == $typeCode) && ($this->data[$i]->statistic_category->value == $categoryCode)) {
-        #        unset($this->data[$i]);
-        #        $ret = true;
-        #    }
-        #}
-
-        # New way: (Thanks Rick!)
         foreach($this->data->user_statistic as $key => $row) {
             if (($row->category_type->value == $typeCode) && ($row->statistic_category->value == $categoryCode)) {
-                array_splice($this->data, $key, 1);
+                array_splice($this->data->user_statistic, $key, 1);
             }
         }
         return;
@@ -157,12 +146,19 @@ class UserStatistics extends Model
     /**
     * Update a user statistic.
     *
+    * @param string $fromTypeCode 
+    * @param string $fromCategoryCode
+    * @param string $toTypeCode
+    * @param string $toCategoryCode
+    * @param string $segmentType
+    * @param string $note
     */
     public function updateStatistic($fromTypeCode,$fromCategoryCode,$toTypeCode,$toCategoryCode,$segmentType,$note)
     {
         /* Remove "from" statistic, then add "to" statistic */
         $this->removeStatistic($fromTypeCode,$fromCategoryCode);
         $this->addStatistic($toTypeCode,$toCategoryCode,$segmentType,$note);
+        return;
     }
 
     /**
