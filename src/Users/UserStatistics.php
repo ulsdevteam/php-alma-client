@@ -143,6 +143,18 @@ class UserStatistics extends Model
     }
 
     /**
+    * Delete all user statistics.
+    *
+    */
+    public function removeAllStatistics()
+    {
+        foreach($this->data->user_statistic as $key => $row) {
+            array_splice($this->data->user_statistic, $key, 1);
+        }
+        return;
+    }
+
+    /**
     * Update a user statistic.
     *
     * @param string $fromTypeCode 
