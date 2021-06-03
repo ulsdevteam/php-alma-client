@@ -67,8 +67,6 @@ class UserStatistics extends Model
     * @param string $categoryDesc description of the statistical category.
     * @param string $note free text description of the statistic.
     * @param string $segment_type (Internal|External)
-    *
-    * @return Statistic
     */
     public function addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$segment_type,$note)
     {
@@ -88,6 +86,8 @@ class UserStatistics extends Model
 
         # Add the object to the user
         $this->data->user_statistic[] = $stat_obj;
+
+        return;
     }
 
     /**
@@ -100,19 +100,18 @@ class UserStatistics extends Model
     */
     public function addStatistic($typeCode,$categoryCode,$segmentType,$note)
     {
-        //* TODO HERE *//
-
-        /* Logic: */
-        /* Lookup both $typeCode and $categoryCode in codetable */
-        /* Obtain information (code/description) from both code tables. */
-        /* If found and ok, add the statistic to the user */
+        /* Logic: 
+           Lookup both $typeCode and $categoryCode in codetable.
+           Obtain information (code/description) from both code tables.
+           If found and ok, add the statistic.
+        */
 
         /* Code Tables used:
             Code Table; UserStatisticalTypes
             Code Table: UserStatCategories
         */
 
-        # Note need some error checking etc. here.
+        # Note: Need some error checking etc. here to ensure that $stat is valid.
 
         # Get the Type and Category Descriptions for the codes from the code tables.
         $stat = $this->client->conf->codetables->get('UserStatisticalTypes')->getRowByCode($typeCode);
