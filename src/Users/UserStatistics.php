@@ -66,9 +66,9 @@ class UserStatistics extends Model
     * @param string $categoryCode code of the statistical category.
     * @param string $categoryDesc description of the statistical category.
     * @param string $note free text description of the statistic.
-    * @param string $segment_type (Internal|External)
+    * @param string $segment_type either "Internal" or "External"
     */
-    public function addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$segment_type,$note)
+    public function addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$segment_type = 'External' ,$note = '')
     {
         # Create the new statistic object
         $stat_obj = (object) [
@@ -86,7 +86,6 @@ class UserStatistics extends Model
 
         # Add the object to the user
         $this->data->user_statistic[] = $stat_obj;
-
         return;
     }
 
@@ -95,23 +94,20 @@ class UserStatistics extends Model
     *
     * @param string $typeCode code of the category type.
     * @param string $categoryCode code of the statistical category.
-    * @param string $segmentType
+    * @param string $segmentType either ("Internal" or "External")
     * @param string $note
     */
-    public function addStatistic($typeCode,$categoryCode,$segmentType,$note)
+    public function addStatistic($typeCode,$categoryCode,$segmentType = 'External',$note = '')
     {
         /* Logic: 
            Lookup both $typeCode and $categoryCode in codetable.
-           Obtain information (code/description) from both code tables.
-           If found and ok, add the statistic.
+           Obtain already configured description from both code tables.
+           If found, add the statistic.
+        
+           Code Tables used:
+             Code Table; UserStatisticalTypes
+             Code Table: UserStatCategories
         */
-
-        /* Code Tables used:
-            Code Table; UserStatisticalTypes
-            Code Table: UserStatCategories
-        */
-
-        # Note: Need some error checking etc. here to ensure that $stat is valid.
 
         # Get the Type and Category Descriptions for the codes from the code tables.
         $stat = $this->client->conf->codetables->get('UserStatisticalTypes')->getRowByCode($typeCode);
@@ -161,10 +157,10 @@ class UserStatistics extends Model
     * @param string $fromCategoryCode
     * @param string $toTypeCode
     * @param string $toCategoryCode
-    * @param string $segmentType
+    * @param string $segmentType ("Internal" or "External")
     * @param string $note
     */
-    public function updateStatistic($fromTypeCode,$fromCategoryCode,$toTypeCode,$toCategoryCode,$segmentType,$note)
+    public function updateStatistic($fromTypeCode,$fromCategoryCode,$toTypeCode,$toCategoryCode,$segmentType = "External" ,$note = '')
     {
         /* Remove "from" statistic, then add "to" statistic */
         $this->removeStatistic($fromTypeCode,$fromCategoryCode);
@@ -175,6 +171,7 @@ class UserStatistics extends Model
     /**
     * Get Stats By Type Code.
     *
+    * @param string $typeCode
     * @return Array of Statistics.
     */
     public function getStatsByTypeCode($typeCode)
@@ -191,6 +188,7 @@ class UserStatistics extends Model
     /**
     * Get Stats by Type Desc.
     *
+    * @param string $typeDesc
     * @return Array of statistics.
     */
     public function getStatsByTypeDesc($typeDesc)
@@ -207,6 +205,7 @@ class UserStatistics extends Model
     /**
     * Get Stats by Category Code.
     *
+    * @param string $categoryCode
     * @return Array of Statistics.
     */
     public function getStatsByCategoryCode($categoryCode)
@@ -223,6 +222,7 @@ class UserStatistics extends Model
     /**
     * Get Stats by Category Desc.
     *
+    * @param string $categoryDesc
     * @return Array of Statistics.
     */
     public function getStatsByCategoryDesc($categoryDesc)
@@ -239,6 +239,7 @@ class UserStatistics extends Model
     /**
     * Get Stats by Segment Type.
     *
+    * @param string $segmentType (Internal|External)
     * @return Array of Statistics.
     */
     public function getStatsBySegmentType($segmentType)
@@ -255,6 +256,7 @@ class UserStatistics extends Model
     /**
     * Search Stats by Note.
     *
+    * @param string $note
     * @return Array of Statistics.
     */
     public function searchStatsByNote($note)
@@ -271,6 +273,7 @@ class UserStatistics extends Model
     /** 
     * Search Stats by Type Code.
     *
+    * @param string $typeCode
     * @return Array of Statistics.
     */
     public function searchStatsByTypeCode($typeCode)
@@ -287,6 +290,7 @@ class UserStatistics extends Model
     /**
     * Search Stats by Type Code.
     *
+    * @param string $typeDesc
     * @return Array of Statistics.
     */
     public function searchStatsByTypeDesc($typeDesc)
@@ -303,6 +307,7 @@ class UserStatistics extends Model
     /**
     * Search Stats by Type Code.
     *
+    * @param string $categoryCode
     * @return Array of Statistics.
     */
     public function searchStatsByCategoryCode($categoryCode)
@@ -319,6 +324,7 @@ class UserStatistics extends Model
     /**
     * Search Stats by Type Code.
     *
+    * @param string $categoryDesc
     * @return Array of Statistics.
     */
     public function searchStatsByCategoryDesc($categoryDesc)
