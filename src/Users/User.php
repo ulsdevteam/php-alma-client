@@ -28,6 +28,11 @@ class User extends LazyResource
     protected $_contact_info;
 
     /**
+     * @var UserStatistics
+     */
+    protected $_user_statistics;
+
+    /**
      * @var Loans
      */
     public $loans;
@@ -97,6 +102,14 @@ class User extends LazyResource
     }
 
     /**
+     * Get the user's statistics info.
+     */
+    public function getStatistics()
+    {
+        return $this->init()->_user_statistics;
+    }
+
+    /**
      * Save the user
      * 
      * @return string The API response body
@@ -128,6 +141,8 @@ class User extends LazyResource
     {
         $this->_identifiers = UserIdentifiers::make($this->client, $data);
         $this->_contact_info = ContactInfo::make($this->client, $data->contact_info);
+        #$this->_user_statistics = UserStatistics::make($this->client, $data->user_statistic);
+        $this->_user_statistics = UserStatistics::make($this->client, $data);
     }
 
     /**

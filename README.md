@@ -28,11 +28,12 @@ If the package doesn't fit your needs, you might take a look at the alternative
      * [Item by barcode](#item-by-barcode)
      * [Electronic portfolios and collections](#electronic-portfolios-and-collections)
      * [Digital representation and files](#digital-representation-and-files)
-  * [Users, loans, fees and requests](#users-loans-fees-and-requests)
+  * [Users, loans, fees, requests and statistics](#users-loans-fees-requests-and-statistics)
      * [Search](#search)
      * [Loans](#loans)
      * [Fees](#fees)
      * [Requests](#requests)
+     * [Statistics](#statistics)
   * [Analytics reports](#analytics-reports)
      * [Column names](#column-names)
      * [Filters](#filters)
@@ -43,6 +44,8 @@ If the package doesn't fit your needs, you might take a look at the alternative
      * [Listing jobs](#listing-jobs)
      * [Retrieving information about a specific job](#retrieving-information-about-a-specific-job)
      * [Submitting a job](#submitting-a-job)
+  * [Code Tables](#code-tables)
+     * [Getting a single code table](#getting-a-codetable)
   * [Automatic retries on errors](#automatic-retries-on-errors)
   * [Laravel integration](#laravel-integration)
      * [Customizing the HTTP client stack](#customizing-the-http-client-stack)
@@ -327,7 +330,7 @@ foreach ($bib->representations as $rep) {
 }
 ```
 
-## Users, loans, fees and requests
+## Users, loans, fees, requests and statistics
 
 **Note**: Editing is not fully implemented.
 
@@ -426,6 +429,64 @@ foreach ($user->requests as $request) {
 ```
 
 Requests can also be retrieved from a `Bib` object or an `Item` object.
+
+### Statistics
+
+**Note** Not fully implemented.
+
+Example:
+```php
+foreach ($user->Statistics as $statistic) {
+    echo json_endcode($statistic, JSON_PRETTY_PRINT);
+}
+```
+Get Statistics:
+```php
+$statistics = $user->Statistics->allStatistics();
+```
+Get a Statistic:
+```php
+$statistic = $user->Statistics->get('CAMPUS','M');
+```
+Add a Statistic:
+```php
+# Create the object:
+$StatisticObject = (object) [
+    'statistic_category' => (object) [
+        'value' => "M",
+        'desc'  => "Main Campus",
+    ],
+    'category_type' => (object) [
+        'value' => "CAMPUS",
+        'desc'  => "Campus",
+    ],
+        'statistic_note' => "New Note",
+        'segment_type'   => "External",
+];
+
+# Add the Statistic object:
+$user->Statitics->addStatistic($StatisticObject);
+
+# Save the User:
+try {
+    $return = $user->save();
+} catch (Exception $e) {
+    echo 'Exception: ', $e->getMessage(), "\n";
+}
+```
+Remove a Statistic:
+```php
+# Remove the Statistic:
+$user->Statistics->removeStatistic('CAMPUS','M');
+
+# Save the User:
+try {
+    $return = $user->save();
+} catch (Exception $e) {
+    echo 'Exception: ', $e->getMessage(), "\n";
+}
+```
+
 
 ## Analytics reports
 
@@ -576,6 +637,20 @@ $job = $alma->jobs['M43'];
 
 ```php
 $instance = $alma->jobs['M43']->submit();
+```
+
+## Code Tables
+
+### Getting a Code Table
+
+To fetch a code table
+
+```php
+$ct = $alma->codetables->get('systemJobStatus');
+echo "Rows for ".$ct->sub_system->value."'s ".$ct->name."\n";
+foreach ($ct->row as $row) {
+	echo "code: ".$row->code.", description: ".$row->description."\n";
+}
 ```
 
 ## Automatic retries on errors
