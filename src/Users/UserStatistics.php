@@ -10,116 +10,60 @@ use Scriptotek\Alma\Model\Model;
  */
 class UserStatistics extends Model
 {
-    /**
-     * Get the user's statistics.
+    /** 
+     * User Statistics Object.
      *
-     * @return Array of Statistics.
+     * See: https://developers.exlibrisgroup.com/alma/apis/docs/xsd/rest_user.xsd/?tags=GET#user_statistics
      */
-    public function getStatistics()
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            $stats[] = $statistic;
-        }
-        return $stats;
-    }
 
     /**
-     * Get the user's statistics.
+     * Get all user's statistics.
      * 
      * @return array of statistics.
      */
-    public function get()
+    public function allStatistics()
     {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            $stats[] = $statistic;
-        }
-        return $stats;
-    }
-
-    /**
-    * Get a statistic.
-    *
-    * @param $typeCode code of the category type.
-    * @param $categoryCode code of the statistical category.
-    *
-    * @return Statistic.
-    */
-    public function getStatistic($typeCode,$categoryCode)
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            if (($statistic->category_type->value == $typeCode) && 
-                ($statistic->statistic_category->value == $categoryCode)) {
-                $stats[] = $statistic;
+        $stats = [];
+        if ($this->data->user_statistic) {
+            foreach ($this->data->user_statistic as $statistic) {
+                $stats[] = Statistic::make($this->client, $statistic);
             }
         }
         return $stats;
     }
 
     /**
-    * Add a user statistic with no regard to existing Types and Categories.
+    * Get a particular statistic.
     *
-    * @param string $typeCode code of the category type.
-    * @param string $typeDesc description of the category type.
-    * @param string $categoryCode code of the statistical category.
-    * @param string $categoryDesc description of the statistical category.
-    * @param string $note free text description of the statistic.
-    * @param string $segment_type either "Internal" or "External"
+    * @param $typeCode code of the category type.
+    * @param $categoryCode code of the statistical category.
+    *
+    * @return array Statistic.
     */
-    public function addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$segment_type = 'External' ,$note = '')
+    public function get($typeCode,$categoryCode)
     {
-        # Create the new statistic object
-        $stat_obj = (object) [
-            'statistic_category' => (object) [
-                'value' => $categoryCode,
-                'desc'  => $categoryDesc,
-            ],
-            'category_type' => (object) [
-                'value' => $typeCode,
-                'desc'  => $typeDesc,
-            ],
-            'statistic_note' => $note,
-            'segment_type'   => $segment_type,
-        ];
-
-        # Add the object to the user
-        $this->data->user_statistic[] = $stat_obj;
-        return;
+        $stats = [];
+        if ($this->data->user_statistic) {
+            foreach ($this->data->user_statistic as $statistic) {
+                if (($statistic->category_type->value == $typeCode) && 
+                    ($statistic->statistic_category->value == $categoryCode)) {
+                    $stats[] = Statistic::make($this->client, $statistic);
+                }
+            }
+        }
+        return $stats;
     }
 
     /**
-    * Add a user statistic based upon existing Types and Categories.
+    * Add a user statistic.
     *
-    * @param string $typeCode code of the category type.
-    * @param string $categoryCode code of the statistical category.
-    * @param string $segmentType either ("Internal" or "External")
-    * @param string $note
+    * @param object Statistic
+    * @return object Statistic
     */
-    public function addStatistic($typeCode,$categoryCode,$segmentType = 'External',$note = '')
+    public function addStatistic($StatisticObj)
     {
-        /* Logic: 
-           Lookup both $typeCode and $categoryCode in codetable.
-           Obtain already configured description from both code tables.
-           If found, add the statistic.
-        
-           Code Tables used:
-             Code Table; UserStatisticalTypes
-             Code Table: UserStatCategories
-        */
-
-        # Get the Type and Category Descriptions for the codes from the code tables.
-        $stat = $this->client->conf->codetables->get('UserStatisticalTypes')->getRowByCode($typeCode);
-        $typeDesc = $stat[0]->description;
-
-        $stat = $this->client->conf->codetables->get('UserStatCategories')->getRowByCode($categoryCode);
-        $categoryDesc = $stat[0]->description;
-        
-        # Add the statistic:
-        $this->addStatisticRaw($typeCode,$typeDesc,$categoryCode,$categoryDesc,$segmentType,$note);
-
-        return;
+        $this->data->user_statistic[] = $StatisticObj;
+        return Statistic::make($this->client, $StatisticObj);
     }
 
     /**
@@ -130,9 +74,11 @@ class UserStatistics extends Model
     */
     public function removeStatistic($typeCode,$categoryCode)
     {
-        foreach($this->data->user_statistic as $key => $row) {
-            if (($row->category_type->value == $typeCode) && ($row->statistic_category->value == $categoryCode)) {
-                array_splice($this->data->user_statistic, $key, 1);
+        if ($this->data->user_statistic) {
+            foreach($this->data->user_statistic as $key => $row) {
+                if (($row->category_type->value == $typeCode) && ($row->statistic_category->value == $categoryCode)) {
+                    array_splice($this->data->user_statistic, $key, 1);
+                }
             }
         }
         return;
@@ -140,202 +86,12 @@ class UserStatistics extends Model
 
     /**
     * Delete all user statistics.
-    *
     */
     public function removeAllStatistics()
     {
-        foreach($this->data->user_statistic as $key => $row) {
-            array_splice($this->data->user_statistic, $key, 1);
-        }
+        $this->data->user_statistic = [];
         return;
     }
 
-    /**
-    * Update a user statistic.
-    *
-    * @param string $fromTypeCode 
-    * @param string $fromCategoryCode
-    * @param string $toTypeCode
-    * @param string $toCategoryCode
-    * @param string $segmentType ("Internal" or "External")
-    * @param string $note
-    */
-    public function updateStatistic($fromTypeCode,$fromCategoryCode,$toTypeCode,$toCategoryCode,$segmentType = "External" ,$note = '')
-    {
-        /* Remove "from" statistic, then add "to" statistic */
-        $this->removeStatistic($fromTypeCode,$fromCategoryCode);
-        $this->addStatistic($toTypeCode,$toCategoryCode,$segmentType,$note);
-        return;
-    }
-
-    /**
-    * Get Stats By Type Code.
-    *
-    * @param string $typeCode
-    * @return Array of Statistics.
-    */
-    public function getStatsByTypeCode($typeCode)
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            if ($statistic->category_type->value == $typeCode) {
-                $stats[] = $statistic;
-            } 
-        }
-        return $stats;
-    } 
-
-    /**
-    * Get Stats by Type Desc.
-    *
-    * @param string $typeDesc
-    * @return Array of statistics.
-    */
-    public function getStatsByTypeDesc($typeDesc)
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            if ($statistic->category_type->desc == $typeDesc) {
-                $stats[] = $statistic;
-            }
-        }
-        return $stats;
-    }
-
-    /**
-    * Get Stats by Category Code.
-    *
-    * @param string $categoryCode
-    * @return Array of Statistics.
-    */
-    public function getStatsByCategoryCode($categoryCode)
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            if ($statistic->statistic_category->value == $categoryCode) {
-                $stats[] = $statistic;
-            }
-        }
-        return $stats;
-    }
-
-    /**
-    * Get Stats by Category Desc.
-    *
-    * @param string $categoryDesc
-    * @return Array of Statistics.
-    */
-    public function getStatsByCategoryDesc($categoryDesc)
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            if ($statistic->statistic_category->desc == $categoryDesc) {
-                $stats[] = $statistic;
-            }
-        }
-        return $stats;
-    }
-
-    /**
-    * Get Stats by Segment Type.
-    *
-    * @param string $segmentType (Internal|External)
-    * @return Array of Statistics.
-    */
-    public function getStatsBySegmentType($segmentType)
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            if ($statistic->segment_type == $segmentType) {
-                $stats[] = $statistic;
-            }
-        }
-        return $stats;
-    }  
-
-    /**
-    * Search Stats by Note.
-    *
-    * @param string $note
-    * @return Array of Statistics.
-    */
-    public function searchStatsByNote($note)
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            if (preg_match("/$note/i", $statistic->statistic_note)) {
-                $stats[] = $statistic;
-            }
-        }
-        return $stats;
-    }
-
-    /** 
-    * Search Stats by Type Code.
-    *
-    * @param string $typeCode
-    * @return Array of Statistics.
-    */
-    public function searchStatsByTypeCode($typeCode)
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            if (preg_match("/$typeCode/i", $statistic->category_type->value)) {
-                $stats[] = $statistic;
-            }
-        }
-        return $stats;
-    }
-
-    /**
-    * Search Stats by Type Code.
-    *
-    * @param string $typeDesc
-    * @return Array of Statistics.
-    */
-    public function searchStatsByTypeDesc($typeDesc)
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            if (preg_match("/$typeDesc/i", $statistic->category_type->desc)) {
-                $stats[] = $statistic;
-            }
-        }
-        return $stats;
-    }
-
-    /**
-    * Search Stats by Type Code.
-    *
-    * @param string $categoryCode
-    * @return Array of Statistics.
-    */
-    public function searchStatsByCategoryCode($categoryCode)
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            if (preg_match("/$categoryCode/i", $statistic->statistic_category->value)) {
-                $stats[] = $statistic;
-            }
-        }
-        return $stats;
-    }
-
-    /**
-    * Search Stats by Type Code.
-    *
-    * @param string $categoryDesc
-    * @return Array of Statistics.
-    */
-    public function searchStatsByCategoryDesc($categoryDesc)
-    {
-        $stats = array();
-        foreach ($this->data->user_statistic as $statistic) {
-            if (preg_match("/$categoryDesc/i", $statistic->statistic_category->desc)) {
-                $stats[] = $statistic;
-            }
-        }
-        return $stats;
-    }
 
 }

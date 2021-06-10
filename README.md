@@ -440,10 +440,53 @@ foreach ($user->Statistics as $statistic) {
     echo json_endcode($statistic, JSON_PRETTY_PRINT);
 }
 ```
+Get Statistics:
 ```php
-$user->Statitics->addStatistic($typeCode,$categoryCode,'External',$note);
-$user->save();
+$statistics = $user->Statistics->allStatistics();
 ```
+Get a Statistic:
+```php
+$statistic = $user->Statistics->get('CAMPUS','M');
+```
+Add a Statistic:
+```php
+# Create the object:
+$StatisticObject = (object) [
+    'statistic_category' => (object) [
+        'value' => "M",
+        'desc'  => "Main Campus",
+    ],
+    'category_type' => (object) [
+        'value' => "CAMPUS",
+        'desc'  => "Campus",
+    ],
+        'statistic_note' => "New Note",
+        'segment_type'   => "External",
+];
+
+# Add the Statistic object:
+$user->Statitics->addStatistic($StatisticObject);
+
+# Save the User:
+try {
+    $return = $user->save();
+} catch (Exception $e) {
+    echo 'Exception: ', $e->getMessage(), "\n";
+}
+```
+Remove a Statistic:
+```php
+# Remove the Statistic:
+$user->Statistics->removeStatistic('CAMPUS','M');
+
+# Save the User:
+try {
+    $return = $user->save();
+} catch (Exception $e) {
+    echo 'Exception: ', $e->getMessage(), "\n";
+}
+```
+
 
 ## Analytics reports
 
